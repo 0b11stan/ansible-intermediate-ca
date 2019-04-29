@@ -80,7 +80,7 @@
 
     - name: Generate CSR 
       openssl_csr:
-        path: intermediate/csr/intermediate.csr
+        path: root/ca/intermediate/csr/intermediate.csr
         privatekey_path: /root/ca/intermediate/private/intermediate.key.pem
         privatekey_passphrase: P@ssw0rd
         country_name: FR
