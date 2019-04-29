@@ -1,67 +1,71 @@
 ---
 # Tasks to create the intermediate CA structure
 
-- name: Installing packages
-  package:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - openssl
-      - python-openssl
+- name: Apply configuration locally
+  connection: local
+  hosts: 127.0.0.1
+  tasks: 
+    - name: Installing packages
+      package:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - openssl
+          - python-openssl
 
-- name: Install pyOpenSSL
-  pip:
-    name: pyOpenSSL
+    - name: Install pyOpenSSL
+      pip:
+        name: pyOpenSSL
 
-- name: Create directories
-  file:
-    path: "{{item}}"
-    state: directory
-  loop:
-    - /root/ca/intermediate
-    - /root/ca/intermediate/certs
-    - /root/ca/intermediate/crl
-    - /root/ca/intermediate/csr
-    - /root/ca/intermediate/newcerts
+    - name: Create directories
+      file:
+        path: "{{item}}"
+        state: directory
+      loop:
+        - /root/ca/intermediate
+        - /root/ca/intermediate/certs
+        - /root/ca/intermediate/crl
+        - /root/ca/intermediate/csr
+        - /root/ca/intermediate/newcerts
 
-- name: Create and chmod the private directory
-  file:
-    path: /root/ca/intermediate/private
-    state: directory
-    mode: 0700
+    - name: Create and chmod the private directory
+      file:
+        path: /root/ca/intermediate/private
+        state: directory
+        mode: 0700
 
-- name: Create the index.txt, serial and crlnumber files    
-  file:
-    path: "{{item}}"
-    state: touch
-  loop:
-    - /root/ca/intermediate/index.txt
-    - /root/ca/intermediate/serial 
-    - /root/ca/intermediate/crlnumber 
+    - name: Create the index.txt, serial and crlnumber files    
+      file:
+        path: "{{item}}"
+        state: touch
+      loop:
+        - /root/ca/intermediate/index.txt
+        - /root/ca/intermediate/serial 
+        - /root/ca/intermediate/crlnumber 
 
-- name: Echo 1000 in serial
-  lineinfile: 
-    path: /root/ca/intermediate/serial
-    line: 1000 
+    - name: Echo 1000 in serial
+      lineinfile: 
+        path: /root/ca/intermediate/serial
+        line: 1000 
 
-- name: Echo 1000 in crlnumber
-  lineinfile: 
-    path: /root/ca/intermediate/crlnumber
-    line: 1000 
+    - name: Echo 1000 in crlnumber
+      lineinfile: 
+        path: /root/ca/intermediate/crlnumber
+        line: 1000 
 
-- name: Copy openssl conf 
-  copy:
-    src: ./intermediate-ca.conf
-    dest: /root/ca/intermediate/openssl.cnf
+    - name: Copy openssl conf 
+      copy:
+        src: ./intermediate-ca.conf
+        dest: /root/ca/intermediate/openssl.cnf
 
-- name: Create private key 
-  openssl_privatekey:
-    path: /root/ca/intermediate/private/intermediate.key.pem
-    passphrase: P@ssw0rd
-    cipher: aes256
+    - name: Create private key 
+      openssl_privatekey:
+        path: /root/ca/intermediate/private/intermediate.key.pem
+        passphrase: P@ssw0rd
+        cipher: aes256
 
-- name: Chmod private key 
-  file:
-    path: /root/ca/intermediate/private/intermediate.key.pem
-    mode: 0400
+    - name: Chmod private key 
+      file:
+        path: /root/ca/intermediate/private/intermediate.key.pem
+        mode: 0400
