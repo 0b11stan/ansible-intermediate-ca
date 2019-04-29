@@ -69,3 +69,20 @@
       file:
         path: /root/ca/intermediate/private/intermediate.key.pem
         mode: 0400
+
+    - name: Backup default ssl conf
+      command: mv /usr/lib/ssl/openssl.cnf /usr/lib/ssl/openssl.cnf.bak
+
+    - name: Copy custom ssl conf to default location
+      copy:
+        src: /root/ca/intermediate/openssl.cnf
+        dest: /usr/lib/ssl/openssl.cnf
+    - name: Generate CSR 
+      openssl_csr:
+        path: intermediate/csr/intermediate.csr
+        privatekey_path: /root/ca/intermediate/private/intermediate.key.pem
+        privatekey_passphrase: P@ssw0rd
+        country_name: FR
+        organization_name: EPSI
+        organizational_unit_name: I4
+        common_name: EPSI INTERMEDIATE CA
