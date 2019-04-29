@@ -77,6 +77,7 @@
       copy:
         src: /root/ca/intermediate/openssl.cnf
         dest: /usr/lib/ssl/openssl.cnf
+
     - name: Generate CSR 
       openssl_csr:
         path: intermediate/csr/intermediate.csr
@@ -86,3 +87,11 @@
         organization_name: EPSI
         organizational_unit_name: I4
         common_name: EPSI INTERMEDIATE CA
+
+    - name: Remove custom openssl conf
+      file:
+        state: absent
+        path: /usr/lib/ssl/openssl.cnf
+
+    - name: Copy back original conf
+      command: mv /usr/lib/ssl/openssl.cnf.bak /usr/lib/ssl/openssl.cnf
