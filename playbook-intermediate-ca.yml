@@ -95,3 +95,6 @@
 
     - name: Copy back original conf
       command: mv /usr/lib/ssl/openssl.cnf.bak /usr/lib/ssl/openssl.cnf
+
+    - name: Display info about next steps:
+      debug: "Ajouter /root/ca/intermediate/csr/cert.csr dans http://controler.epsi.intra/certsrv en s'authentifiant en tant qu'administrateur du domaine, et l'importer dans le Domain Controler"
