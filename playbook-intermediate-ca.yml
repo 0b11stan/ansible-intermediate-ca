@@ -1,9 +1,7 @@
 ---
 # Tasks to create the intermediate CA structure
 
-- name: Apply configuration locally
-  connection: local
-  hosts: 127.0.0.1
+- hosts: remote
   tasks: 
     - name: Installing packages
       package:
@@ -56,7 +54,7 @@
 
     - name: Copy openssl conf 
       copy:
-        src: ./intermediate-ca.conf
+        src: intermediate-ca.conf
         dest: /root/ca/intermediate/openssl.cnf
 
     - name: Create private key 
@@ -77,6 +75,7 @@
       copy:
         src: /root/ca/intermediate/openssl.cnf
         dest: /usr/lib/ssl/openssl.cnf
+        remote_src: true
 
     - name: Generate CSR 
       openssl_csr:
@@ -86,7 +85,7 @@
         country_name: FR
         organization_name: EPSI
         organizational_unit_name: I4
-        common_name: EPSI INTERMEDIATE CA
+        common_name: TRISTAN INTERMEDIATE CA
 
     - name: Remove custom openssl conf
       file:
@@ -95,6 +94,3 @@
 
     - name: Copy back original conf
       command: mv /usr/lib/ssl/openssl.cnf.bak /usr/lib/ssl/openssl.cnf
-
-    - name: Display info about next steps:
-      debug: "Ajouter /root/ca/intermediate/csr/cert.csr dans http://controler.epsi.intra/certsrv en s'authentifiant en tant qu'administrateur du domaine, et l'importer dans le Domain Controler"
